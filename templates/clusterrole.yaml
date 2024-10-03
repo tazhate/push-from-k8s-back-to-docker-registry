@@ -1,0 +1,22 @@
+# templates/clusterrole.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: push-images-role
+rules:
+  - apiGroups: [""]
+    resources:
+      - nodes
+      - nodes/proxy
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups: [""]
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - watch

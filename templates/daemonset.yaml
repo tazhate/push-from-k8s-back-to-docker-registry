@@ -1,0 +1,58 @@
+# templates/daemonset.yaml
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Values.daemonset.name }}
+  namespace: {{ .Values.daemonset.namespace }}
+  labels:
+    app: push-missed-images
+spec:
+  selector:
+    matchLabels:
+      app: push-missed-images
+  template:
+    metadata:
+      labels:
+        app: push-missed-images
+    spec:
+      serviceAccountName: push-images-sa
+      containers:
+        - name: push-images
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          securityContext:
+            privileged: true
+          env:
+            - name: REGISTRY_URL
+              value: "{{ .Values.registry.url }}"
+            - name: REGISTRY_USERNAME
+              value: "{{ .Values.registry.username }}"
+            - name: REGISTRY_PASSWORD
+              value: "{{ .Values.registry.password }}"
+            - name: NAMESPACES
+              value: "{{ join "," .Values.monitor.namespaces }}"
+            - name: DEPLOYMENTS
+              value: "{{ join "," .Values.monitor.deployments }}"
+          volumeMounts:
+            - name: containerd-sock
+              mountPath: /run/containerd/containerd.sock
+            - name: script
+              mountPath: /scripts
+              readOnly: true
+            - name: config
+              mountPath: /etc/push-images
+              readOnly: true
+          command: ["/bin/bash", "/scripts/push_images.sh"]
+      restartPolicy: Always
+      volumes:
+        - name: containerd-sock
+          hostPath:
+            path: /run/containerd/containerd.sock
+            type: Socket
+        - name: script
+          configMap:
+            name: push-images-script
+        - name: config
+          secret:
+            secretName: registry-credentials
