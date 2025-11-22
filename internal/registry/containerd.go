@@ -152,7 +152,7 @@ func (c *Client) PushImageFromContainerd(ctx context.Context, imageName, targetI
 }
 
 // ImageExistsInContainerd checks if an image exists in local containerd
-func ImageExistsInContainerd(ctx context.Context, _, socketPath string, logger zerolog.Logger) (bool, error) {
+func ImageExistsInContainerd(ctx context.Context, _, socketPath string, _ zerolog.Logger) (bool, error) {
 	// Use ctr to check if image exists
 	// ctr -n k8s.io images list | grep imageName
 	cmd := exec.CommandContext(ctx, "ctr", "-n", containerdNamespace, "images", "list", "--quiet")

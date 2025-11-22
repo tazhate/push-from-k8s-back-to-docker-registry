@@ -8,14 +8,12 @@ import (
 )
 
 // Config holds all configuration for the application
+//
+//nolint:govet // fieldalignment: struct layout is for readability, not minimal size
 type Config struct {
-	// Kubernetes configuration (slices first for alignment)
+	// Kubernetes configuration
 	Namespaces  []string
 	Deployments []string
-
-	// Sync settings
-	SyncPeriod time.Duration
-	RetryDelay time.Duration
 
 	// Target registry configuration
 	RegistryURL          string
@@ -27,6 +25,10 @@ type Config struct {
 	MetricsAddr string
 	HealthAddr  string
 	LogLevel    string
+
+	// Sync settings
+	SyncPeriod time.Duration
+	RetryDelay time.Duration
 
 	// Retry settings
 	MaxRetries int
