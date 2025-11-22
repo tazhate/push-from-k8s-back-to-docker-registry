@@ -16,10 +16,10 @@ import (
 
 // Client handles container registry operations
 type Client struct {
-	targetRegistry       string
+	options              []crane.Option
 	auth                 authn.Authenticator
 	logger               zerolog.Logger
-	options              []crane.Option
+	targetRegistry       string
 	containerdSocketPath string
 	runtimeType          RuntimeType
 }
@@ -125,7 +125,7 @@ func (c *Client) ImageExists(ctx context.Context, imageRef string) (bool, error)
 }
 
 // CopyImage copies an image from source to target registry
-func (c *Client) CopyImage(ctx context.Context, sourceImage, targetImage string) error {
+func (c *Client) CopyImage(_ context.Context, sourceImage, targetImage string) error {
 	start := time.Now()
 	defer func() {
 		metrics.ImageSyncDuration.WithLabelValues("copy").Observe(time.Since(start).Seconds())

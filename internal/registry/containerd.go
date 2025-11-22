@@ -31,16 +31,16 @@ var commonSocketPaths = []struct {
 	path    string
 	runtime RuntimeType
 }{
-	{"/host/run/containerd/containerd.sock", RuntimeContainerd},                   // standard containerd
-	{"/host/run/k0s/containerd.sock", RuntimeContainerd},                          // k0s
-	{"/host/run/k3s/containerd/containerd.sock", RuntimeContainerd},               // k3s
-	{"/host/var/snap/microk8s/common/run/containerd.sock", RuntimeContainerd},     // microk8s
-	{"/host/run/docker.sock", RuntimeDocker},                                      // standard docker
-	{"/run/containerd/containerd.sock", RuntimeContainerd},                        // fallback without /host prefix
-	{"/run/k0s/containerd.sock", RuntimeContainerd},                               // k0s fallback
-	{"/run/k3s/containerd/containerd.sock", RuntimeContainerd},                    // k3s fallback
-	{"/var/snap/microk8s/common/run/containerd.sock", RuntimeContainerd},          // microk8s fallback
-	{"/run/docker.sock", RuntimeDocker},                                           // docker fallback
+	{"/host/run/containerd/containerd.sock", RuntimeContainerd},               // standard containerd
+	{"/host/run/k0s/containerd.sock", RuntimeContainerd},                      // k0s
+	{"/host/run/k3s/containerd/containerd.sock", RuntimeContainerd},           // k3s
+	{"/host/var/snap/microk8s/common/run/containerd.sock", RuntimeContainerd}, // microk8s
+	{"/host/run/docker.sock", RuntimeDocker},                                  // standard docker
+	{"/run/containerd/containerd.sock", RuntimeContainerd},                    // fallback without /host prefix
+	{"/run/k0s/containerd.sock", RuntimeContainerd},                           // k0s fallback
+	{"/run/k3s/containerd/containerd.sock", RuntimeContainerd},                // k3s fallback
+	{"/var/snap/microk8s/common/run/containerd.sock", RuntimeContainerd},      // microk8s fallback
+	{"/run/docker.sock", RuntimeDocker},                                       // docker fallback
 }
 
 // DetectContainerdSocket attempts to find the container runtime socket
@@ -76,7 +76,7 @@ func DetectContainerdSocket(socketPath string, logger zerolog.Logger) (string, R
 		}
 	}
 
-	var paths []string
+	paths := make([]string, 0, len(commonSocketPaths))
 	for _, s := range commonSocketPaths {
 		paths = append(paths, s.path)
 	}
@@ -152,7 +152,7 @@ func (c *Client) PushImageFromContainerd(ctx context.Context, imageName, targetI
 }
 
 // ImageExistsInContainerd checks if an image exists in local containerd
-func ImageExistsInContainerd(ctx context.Context, imageName, socketPath string, logger zerolog.Logger) (bool, error) {
+func ImageExistsInContainerd(ctx context.Context, _, socketPath string, logger zerolog.Logger) (bool, error) {
 	// Use ctr to check if image exists
 	// ctr -n k8s.io images list | grep imageName
 	cmd := exec.CommandContext(ctx, "ctr", "-n", containerdNamespace, "images", "list", "--quiet")

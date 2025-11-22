@@ -9,31 +9,27 @@ import (
 
 // Config holds all configuration for the application
 type Config struct {
-	// Target registry configuration
-	RegistryURL      string
-	RegistryUsername string
-	RegistryPassword string
-
-	// Kubernetes configuration
+	// Kubernetes configuration (slices first for alignment)
 	Namespaces  []string
 	Deployments []string
 
 	// Sync settings
 	SyncPeriod time.Duration
-
-	// Retry settings
-	MaxRetries int
 	RetryDelay time.Duration
+
+	// Target registry configuration
+	RegistryURL          string
+	RegistryUsername     string
+	RegistryPassword     string
+	ContainerdSocketPath string
 
 	// Server settings
 	MetricsAddr string
 	HealthAddr  string
+	LogLevel    string
 
-	// Logging
-	LogLevel string
-
-	// Containerd settings
-	ContainerdSocketPath string
+	// Retry settings
+	MaxRetries int
 }
 
 // Load loads configuration from environment variables

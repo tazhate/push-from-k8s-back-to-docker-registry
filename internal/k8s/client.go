@@ -45,7 +45,6 @@ func NewClient(logger zerolog.Logger) (*Client, error) {
 
 // GetDeploymentImages returns all container images used in deployments
 func (c *Client) GetDeploymentImages(ctx context.Context, namespace string, deploymentNames []string) ([]string, error) {
-	var images []string
 	imageSet := make(map[string]struct{})
 
 	if len(deploymentNames) == 0 {
@@ -75,6 +74,7 @@ func (c *Client) GetDeploymentImages(ctx context.Context, namespace string, depl
 	}
 
 	// Convert set to slice
+	images := make([]string, 0, len(imageSet))
 	for image := range imageSet {
 		images = append(images, image)
 	}
@@ -119,7 +119,7 @@ func (c *Client) GetAllImages(ctx context.Context, namespaces []string, deployme
 	}
 
 	// Convert to slice
-	var allImages []string
+	allImages := make([]string, 0, len(imageSet))
 	for image := range imageSet {
 		allImages = append(allImages, image)
 	}
