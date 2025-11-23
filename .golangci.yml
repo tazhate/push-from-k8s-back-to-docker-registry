@@ -1,3 +1,5 @@
+version: "2"
+
 run:
   timeout: 5m
   tests: true
@@ -24,46 +26,46 @@ linters:
     - nilerr
     - nolintlint
 
-linters-settings:
-  errcheck:
-    check-type-assertions: true
-    check-blank: true
+  settings:
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
 
-  govet:
-    enable-all: true
-    disable:
-      - fieldalignment
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment
 
-  gofmt:
-    simplify: true
+    gofmt:
+      simplify: true
 
-  revive:
-    rules:
-      - name: var-naming
-        severity: warning
-      - name: error-return
-      - name: error-strings
-      - name: error-naming
-      - name: exported
-      - name: indent-error-flow
-      - name: empty-block
-      - name: superfluous-else
-      - name: unreachable-code
-      - name: unused-parameter
+    revive:
+      rules:
+        - name: var-naming
+          severity: warning
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+        - name: exported
+        - name: indent-error-flow
+        - name: empty-block
+        - name: superfluous-else
+        - name: unreachable-code
+        - name: unused-parameter
 
-  gosec:
-    excludes:
-      - G204 # Subprocess launched with variable - we need this for ctr/docker commands
-      - G304 # File path provided as taint input - we need this for reading files
+    gosec:
+      excludes:
+        - G204 # Subprocess launched with variable - we need this for ctr/docker commands
+        - G304 # File path provided as taint input - we need this for reading files
 
-  misspell:
-    locale: US
+    misspell:
+      locale: US
 
-  nakedret:
-    max-func-lines: 30
+    nakedret:
+      max-func-lines: 30
 
-  unparam:
-    check-exported: false
+    unparam:
+      check-exported: false
 
 issues:
   exclude-rules:
