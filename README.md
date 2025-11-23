@@ -101,4 +101,4 @@ MIT - Do whatever you want, just don't sue us.
 
 ---
 
-**Made by [@tazhate](https://github.com/tazhate)** | [Issues](https://github.com/tazhate/push-from-k8s-back-to-docker-registry/issues) | [Discussions](https://github.com/tazhate/push-from-k8s-back-to-docker-registry/discussions)
+**Made by [@tazhate](https://github.com/tazhate)** | [Issues](https://github.com/tazhate/push-from-k8s-back-to-docker-registry/issues)
