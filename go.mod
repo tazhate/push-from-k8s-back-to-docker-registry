@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	github.com/google/go-containerregistry v0.20.2
 	github.com/prometheus/client_golang v1.23.2
-	github.com/rs/zerolog v1.33.0
+	github.com/rs/zerolog v1.34.0
 	k8s.io/api v0.32.0
 	k8s.io/apimachinery v0.32.0
 	k8s.io/client-go v0.32.0
