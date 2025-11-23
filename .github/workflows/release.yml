@@ -165,7 +165,7 @@ jobs:
           sed -i "s/^appVersion:.*/appVersion: \"${GITHUB_REF#refs/tags/}\"/" chart/Chart.yaml
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
+        uses: helm/chart-releaser-action@v1.7.0
         with:
           charts_dir: .
           skip_existing: true
