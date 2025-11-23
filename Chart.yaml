@@ -1,5 +1,0 @@
-apiVersion: v2
-name: push-missed-images
-description: A Helm chart to deploy a DaemonSet that pushes missed images to a registry.
-version: 1.0.0
-appVersion: "1.0"

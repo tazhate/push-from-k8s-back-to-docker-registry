@@ -1,0 +1,46 @@
+# Binaries
+bin/
+dist/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test coverage
+*.out
+coverage.html
+
+# Go workspace file
+go.work
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Env files
+.env
+.env.local
+
+# Kubernetes configs (don't commit kubeconfig)
+kubeconfig
+*.kubeconfig
+
+# Helm
+*.tgz
+charts/
+Chart.lock
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Logs
+*.log
+
+# OS
+Thumbs.db

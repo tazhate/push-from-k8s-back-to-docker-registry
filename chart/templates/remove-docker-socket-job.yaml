@@ -1,0 +1,31 @@
+# templates/remove-docker-socket-job.yaml
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: remove-docker-socket
+  namespace: {{ .Values.daemonset.namespace }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: remove-docker-socket
+    spec:
+      serviceAccountName: push-images-sa
+      containers:
+        - name: remove-socket
+          image: alpine:3.18
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Removing Docker socket..."
+              rm -f /var/run/docker.sock
+      restartPolicy: OnFailure
+      hostPID: true  # Allows access to host's filesystem
+      volumes:
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket

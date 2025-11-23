@@ -1,0 +1,43 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+LICENSE
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Build artifacts
+bin/
+dist/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test files
+*_test.go
+testdata/
+
+# Old files
+Dockerfile-old
+*.sh
+check_k8s_images.sh
+entrypoint.sh
+
+# Helm chart (built separately)
+chart/
+
+# Dependencies (will be downloaded during build)
+vendor/

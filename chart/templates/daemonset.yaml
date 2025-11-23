@@ -1,0 +1,123 @@
+# templates/daemonset.yaml
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Values.daemonset.name }}
+  namespace: {{ .Values.daemonset.namespace }}
+  labels:
+    app: push-missed-images
+spec:
+  selector:
+    matchLabels:
+      app: push-missed-images
+  template:
+    metadata:
+      labels:
+        app: push-missed-images
+    spec:
+      serviceAccountName: push-images-sa
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+        fsGroup: 0
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: push-images
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+            runAsUser: 0
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: "{{ .Values.resources.requests.cpu }}"
+              memory: "{{ .Values.resources.requests.memory }}"
+            limits:
+              cpu: "{{ .Values.resources.limits.cpu }}"
+              memory: "{{ .Values.resources.limits.memory }}"
+          env:
+            - name: TARGET_REGISTRY_URL
+              value: "{{ .Values.registry.url }}"
+            - name: TARGET_REGISTRY_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  {{- if .Values.registry.existingSecret }}
+                  name: {{ .Values.registry.existingSecret }}
+                  {{- else }}
+                  name: registry-credentials
+                  {{- end }}
+                  key: username
+            - name: TARGET_REGISTRY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  {{- if .Values.registry.existingSecret }}
+                  name: {{ .Values.registry.existingSecret }}
+                  {{- else }}
+                  name: registry-credentials
+                  {{- end }}
+                  key: password
+            - name: NAMESPACES
+              value: "{{ join "," .Values.monitor.namespaces }}"
+            - name: DEPLOYMENTS
+              value: "{{ join "," .Values.monitor.deployments }}"
+            - name: SYNC_PERIOD
+              value: "{{ .Values.sync.period }}"
+            - name: LOG_LEVEL
+              value: "{{ .Values.logging.level }}"
+            - name: METRICS_ADDR
+              value: ":{{ .Values.metrics.port }}"
+            - name: HEALTH_ADDR
+              value: ":{{ .Values.health.port }}"
+            - name: CONTAINERD_SOCKET_PATH
+              value: "{{ .Values.containerd.socketPath }}"
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+              protocol: TCP
+            - name: health
+              containerPort: {{ .Values.health.port }}
+              protocol: TCP
+          {{- if .Values.health.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            initialDelaySeconds: {{ .Values.health.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.health.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.health.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.health.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.health.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: health
+            initialDelaySeconds: {{ .Values.health.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.health.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.health.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.health.readinessProbe.failureThreshold }}
+          {{- end }}
+          volumeMounts:
+            - name: host-run
+              mountPath: /host/run
+              readOnly: true
+            - name: host-var-snap
+              mountPath: /host/var/snap
+              readOnly: true
+      volumes:
+        - name: host-run
+          hostPath:
+            path: /run
+            type: Directory
+        - name: host-var-snap
+          hostPath:
+            path: /var/snap
+            type: DirectoryOrCreate
+      restartPolicy: Always

@@ -1,12 +1,42 @@
-FROM bash:latest
+# Build stage
+FROM golang:1.23-alpine AS builder
 
-RUN apk add --no-cache curl jq && \
-    curl -LO https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.24.0/crictl-v1.24.0-linux-amd64.tar.gz && \
-    tar -zxvf crictl-v1.24.0-linux-amd64.tar.gz -C /usr/local/bin && \
-    chmod +x /usr/local/bin/crictl
+WORKDIR /app
 
-# Install kubectl
-RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
-    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+# Install build dependencies
+RUN apk add --no-cache git ca-certificates
 
-ENTRYPOINT ["/bin/bash"]
+# Copy go mod files
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build the binary
+RUN CGO_ENABLED=0 GOOS=linux go build \
+    -ldflags="-w -s" \
+    -o /syncer \
+    ./cmd/syncer
+
+# Final stage
+FROM alpine:3.19
+
+# Install runtime dependencies
+RUN apk add --no-cache \
+    ca-certificates \
+    containerd \
+    docker-cli \
+    tini
+
+# Create symlinks for ctr
+RUN ln -sf /usr/bin/ctr /usr/local/bin/ctr
+
+# Copy binary from builder
+COPY --from=builder /syncer /usr/local/bin/syncer
+
+# Use tini as init
+ENTRYPOINT ["/sbin/tini", "--"]
+
+# Run the syncer
+CMD ["/usr/local/bin/syncer"]

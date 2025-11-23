@@ -1,0 +1,18 @@
+{{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Values.daemonset.name }}
+  namespace: {{ .Values.daemonset.namespace }}
+  labels:
+    app: push-missed-images
+spec:
+  selector:
+    matchLabels:
+      app: push-missed-images
+      component: metrics
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
+{{- end }}

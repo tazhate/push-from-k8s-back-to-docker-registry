@@ -1,0 +1,85 @@
+# values.yaml
+
+# Container Registry Configuration
+registry:
+  url: "ghcr.io"            # Replace with your registry URL
+  username: ""              # Set via --set or create secret manually
+  password: ""              # Set via --set or create secret manually
+  # Use existing secret instead of creating one from values
+  existingSecret: ""        # If set, will use this secret instead of creating new one
+
+# Namespaces and Deployments to Monitor
+monitor:
+  namespaces:
+    - "default"
+  deployments: []  # If empty, all deployments in the specified namespaces will be monitored
+  # Example:
+  # namespaces:
+  #   - "production"
+  #   - "staging"
+  # deployments:
+  #   - "deployment1"
+  #   - "deployment2"
+
+# Image Settings
+image:
+  repository: "tazhate/push-from-k8s-back-to-docker-registry"
+  tag: "v2.3.0"  # Go version with Docker and Containerd socket support
+  pullPolicy: "IfNotPresent"
+
+# DaemonSet Settings
+daemonset:
+  name: "push-missed-images"
+  namespace: "kube-system"
+
+# Containerd Settings
+containerd:
+  # Path to containerd socket. If empty, will auto-detect from common locations:
+  # - /run/containerd/containerd.sock (standard)
+  # - /run/k0s/containerd.sock (k0s)
+  # - /run/k3s/containerd/containerd.sock (k3s)
+  # - /var/snap/microk8s/common/run/containerd.sock (microk8s)
+  socketPath: ""  # Leave empty for auto-detection
+
+# Sync Settings
+sync:
+  period: "10m"  # Set the synchronization period (e.g., "1h" for one hour)
+
+# RBAC Configuration
+rbac:
+  create: true
+
+resources:
+  requests:
+    cpu: "50m"
+    memory: "64Mi"
+  limits:
+    cpu: "200m"
+    memory: "128Mi"
+
+# Logging
+logging:
+  level: "info"  # debug, info, warn, error
+
+# Metrics and Health
+metrics:
+  enabled: true
+  port: 8080
+  serviceMonitor:
+    enabled: false  # Enable if using Prometheus Operator
+
+health:
+  enabled: true
+  port: 8081
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
