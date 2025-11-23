@@ -72,7 +72,7 @@ jobs:
             ./cmd/syncer
 
       - name: Build Docker image
-        run: docker build -f Dockerfile.new -t test-image:${{ github.sha }} .
+        run: docker build -t test-image:${{ github.sha }} .
 
   helm-lint:
     name: Helm Lint
