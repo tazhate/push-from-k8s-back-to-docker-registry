@@ -15,8 +15,6 @@ import (
 )
 
 // Client handles container registry operations
-//
-//nolint:govet // fieldalignment: struct layout is for readability, not minimal size
 type Client struct {
 	options              []crane.Option
 	auth                 authn.Authenticator

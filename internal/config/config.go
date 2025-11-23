@@ -8,8 +8,6 @@ import (
 )
 
 // Config holds all configuration for the application
-//
-//nolint:govet // fieldalignment: struct layout is for readability, not minimal size
 type Config struct {
 	// Kubernetes configuration
 	Namespaces  []string
