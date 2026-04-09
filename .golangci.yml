@@ -70,24 +70,19 @@ linters:
     unparam:
       check-exported: false
 
-issues:
-  exclude-rules:
-    # Exclude some linters from running on tests files
-    - path: _test\.go
-      linters:
-        - gosec
-        - errcheck
+  exclusions:
+    rules:
+      # Exclude some linters from running on tests files
+      - path: _test\.go
+        linters:
+          - gosec
+          - errcheck
 
-    # Exclude known issues
-    - linters:
-        - staticcheck
-      text: "SA1019:" # Ignore deprecation warnings for now
-
-  max-issues-per-linter: 0
-  max-same-issues: 0
+      # Exclude known issues
+      - linters:
+          - staticcheck
+        text: "SA1019:"
 
 output:
   formats:
-    colored-line-number:
-      print-issued-lines: true
-      print-linter-name: true
+    text: {}
