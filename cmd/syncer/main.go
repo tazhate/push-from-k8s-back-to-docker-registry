@@ -129,13 +129,13 @@ func startHealthServer(addr string, logger zerolog.Logger) {
 	// Liveness probe
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "OK")
+		_, _ = fmt.Fprintf(w, "OK")
 	})
 
 	// Readiness probe
 	mux.HandleFunc("/readyz", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "Ready")
+		_, _ = fmt.Fprintf(w, "Ready")
 	})
 
 	server := &http.Server{

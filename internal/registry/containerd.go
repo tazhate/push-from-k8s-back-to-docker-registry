@@ -21,6 +21,7 @@ const (
 // RuntimeType represents the container runtime type
 type RuntimeType string
 
+// Container runtime type constants.
 const (
 	RuntimeContainerd RuntimeType = "containerd"
 	RuntimeDocker     RuntimeType = "docker"
@@ -101,7 +102,7 @@ func (c *Client) PushImageFromContainerd(ctx context.Context, imageName, targetI
 
 	// Export image as tar
 	tmpfile := fmt.Sprintf("/tmp/image-%d.tar", time.Now().Unix())
-	defer os.Remove(tmpfile)
+	defer func() { _ = os.Remove(tmpfile) }()
 
 	var cmd *exec.Cmd
 	switch runtime {
