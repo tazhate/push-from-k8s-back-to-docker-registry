@@ -1,0 +1,23 @@
+apiVersion: v1
+entries:
+  push-missed-images:
+  - apiVersion: v2
+    appVersion: v2.4.0
+    created: "2026-04-10T17:32:07.043709235Z"
+    description: A Helm chart to deploy a DaemonSet that syncs container images from
+      Kubernetes to a target registry (Go version)
+    digest: 90ec51131ec61d9b810b74c11c14e8f078fe64fcc9bcc5556b2996a397b4d3e2
+    home: https://github.com/tazhate/push-from-k8s-back-to-docker-registry
+    keywords:
+    - kubernetes
+    - docker
+    - registry
+    - image-sync
+    - container
+    maintainers:
+    - name: tazhate
+    name: push-missed-images
+    urls:
+    - https://github.com/tazhate/push-from-k8s-back-to-docker-registry/releases/download/push-missed-images-2.4.0/push-missed-images-2.4.0.tgz
+    version: 2.4.0
+generated: "2026-04-10T17:32:07.043714515Z"
