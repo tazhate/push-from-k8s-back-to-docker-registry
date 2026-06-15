@@ -20,7 +20,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
     ./cmd/syncer
 
 # Final stage
-FROM alpine:3.22
+FROM alpine:3.24
 
 # Install runtime dependencies
 RUN apk add --no-cache \
